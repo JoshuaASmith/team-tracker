@@ -1,19 +1,17 @@
 /*jshint esversion: 6 */
-const dalNoSQL = require('./DAL/noSQL.js');
+const dalNoSQL = require('./DAL/noSQL.js')
 
-const path = require('path');
-const PouchDB = require('pouchdb-http');
-PouchDB.plugin(require('pouchdb-mapreduce'));
-const fetchConfig = require('zero-config');
+const path = require('path')
+const PouchDB = require('pouchdb-http')
+PouchDB.plugin(require('pouchdb-mapreduce'))
+const fetchConfig = require('zero-config')
 //const uuid = require('node-uuid');
 
-var config = fetchConfig(path.join(__dirname, '.'), {
-    dcValue: 'test'
-});
+var config = fetchConfig(path.join(__dirname, '.'), {dcValue: 'test'})
 
-const couch_base_uri = config.get("couch.baseURI") + ':' + config.get("couch.port") + "/";
-const couch_dbname = config.get("couch.dbName");
-const db = new PouchDB(couch_base_uri + couch_dbname);
+const couch_base_uri = config.get("couch.baseURI") + ':' + config.get("couch.port") + "/"
+const couch_dbname = config.get("couch.dbName")
+const db = new PouchDB(couch_base_uri + couch_dbname)
 
 function removeDoc(data) {
     var removeDoc = {
@@ -22,22 +20,24 @@ function removeDoc(data) {
     }
 
     db.remove(removeDoc, function(err, response) {
-        if (err) console.log(err);
-    });
+        if (err)
+            console.log(err);
+        }
+    )
 }
 
 function missingPersonDataTest(data, withOrWithout, test, number, remove) {
     dalNoSQL.createPerson(data, function callback(err, response) {
         if (err) {
-            console.log("Test #", number, ": Success --> createPerson() prevented me from adding a person ", withOrWithout, test, ". Message: ", err.message);
+            console.log("Test #", number, ": Success --> createPerson() prevented me from adding a person ", withOrWithout, test, ". Message: ", err.message)
         }
         if (response && response.ok === true) {
-            console.log("Test #", number, ": Fail --> createPerson() allowed me to add ", response.id, " to the database ", withOrWithout, test);
+            console.log("Test #", number, ": Fail --> createPerson() allowed me to add ", response.id, " to the database ", withOrWithout, test)
             if (remove) {
-                removeDoc(response);
+                removeDoc(response)
             }
         }
-    });
+    })
 }
 
 function missingPersonDataRemoveTest(data, withOrWithout, test, number) {
@@ -48,7 +48,7 @@ function missingPersonDataRemoveTest(data, withOrWithout, test, number) {
         if (response && response.ok === true) {
             console.log("Test #", number, ": Fail --> deletePerson() allowed me to delete ", response.id, " from the database ", withOrWithout, test);
         }
-    });
+    })
 }
 
 function missingPersonDataUpdateTest(data, withOrWithout, test, number) {
@@ -59,7 +59,7 @@ function missingPersonDataUpdateTest(data, withOrWithout, test, number) {
         if (response && response.ok === true) {
             console.log("Test #", number, ": Fail --> updatePerson() allowed me to update ", response.id, " from the database ", withOrWithout, test);
         }
-    });
+    })
 }
 
 function AddPersonTest(data, number, remove) {
@@ -70,7 +70,7 @@ function AddPersonTest(data, number, remove) {
         if (response && response.ok === true) {
             console.log("Test #", number, ": Success --> createPerson() allowed me to add ", response.id, " to the database. ");
             if (remove) {
-                removeDoc(response);
+                removeDoc(response)
             }
         }
     });
@@ -84,7 +84,7 @@ function removePersonTest(data, number) {
         if (response && response.ok === true) {
             console.log("Test #", number, ": Success --> deletePerson() deleted the person with an _id: ", data._id);
         }
-    });
+    })
 }
 
 function updatePersonTest(data, number) {
@@ -98,15 +98,14 @@ function updatePersonTest(data, number) {
                 _id: response.id,
                 _rev: response.rev
             }, function(deleteErr, deleteResponse) {
-                if (deleteErr) return console.log("removing test data... delete error!", deleteErr);
+                if (deleteErr)
+                    return console.log("removing test data... delete error!", deleteErr);
 
-            })
+                }
+            )
         }
-    });
+    })
 }
-
-
-
 
 function missingReliefEffortDataTest(data, withOrWithout, test, number, remove) {
     dalNoSQL.createReliefEffort(data, function callback(err, response) {
@@ -119,7 +118,7 @@ function missingReliefEffortDataTest(data, withOrWithout, test, number, remove) 
                 removeDoc(response);
             }
         }
-    });
+    })
 }
 
 function missingReliefEffortDataRemoveTest(data, withOrWithout, test, number) {
@@ -141,7 +140,7 @@ function missingReliefEffortDataUpdateTest(data, withOrWithout, test, number) {
         if (response && response.ok === true) {
             console.log("Test #", number, ": Fail --> updateReliefEffort() allowed me to update ", response.id, " from the database ", withOrWithout, test);
         }
-    });
+    })
 }
 
 function AddReliefEffortTest(data, number, remove) {
@@ -180,16 +179,14 @@ function updateReliefEffortTest(data, number) {
                 _id: response.id,
                 _rev: response.rev
             }, function(deleteErr, deleteResponse) {
-                if (deleteErr) return console.log("removing test data... delete error!", deleteErr);
+                if (deleteErr)
+                    return console.log("removing test data... delete error!", deleteErr);
 
-            })
+                }
+            )
         }
     });
 }
-
-
-
-
 
 //////////////////
 // Test Library
@@ -308,26 +305,27 @@ function createReliefEffort() {
     AddReliefEffortTest(ReliefEffortNoProblems, 5, true);
 }
 
-
 function deleteReliefEffort() {
 
-    const reliefEfforts = [{
-        "phase": "completed",
-        "name": "Hurricane Camille 1968",
-        "organizationID": "Hurricane Helpers",
-        "desc": "Provide water purification systems. Hurricane Camille was a storm.",
-        "start": "2005-08-23",
-        "end": "2005-09-31",
-        "active": true
-    }, {
-        "phase": "completed",
-        "name": "Hurricane Katrina 2005",
-        "organizationID": "Hurricane Helpers",
-        "desc": "Provide water purification systems. Hurricane Katrina was the eleventh named storm and fifth hurricane of the 2005 Atlantic hurricane season. It was the costliest natural disaster, as well as one of the five deadliest hurricanes, in the history of the United States.",
-        "start": "2005-08-23",
-        "end": "2005-09-31",
-        "active": true
-    }];
+    const reliefEfforts = [
+        {
+            "phase": "completed",
+            "name": "Hurricane Camille 1968",
+            "organizationID": "Hurricane Helpers",
+            "desc": "Provide water purification systems. Hurricane Camille was a storm.",
+            "start": "2005-08-23",
+            "end": "2005-09-31",
+            "active": true
+        }, {
+            "phase": "completed",
+            "name": "Hurricane Katrina 2005",
+            "organizationID": "Hurricane Helpers",
+            "desc": "Provide water purification systems. Hurricane Katrina was the eleventh named storm and fifth hurricane of the 2005 Atlantic hurricane season. It was the costliest natural disaster, as well as one of the five deadliest hurricanes, in the history of the United States.",
+            "start": "2005-08-23",
+            "end": "2005-09-31",
+            "active": true
+        }
+    ];
 
     db.bulkDocs(reliefEfforts, function(err, response) {
         if (err) {
@@ -357,24 +355,25 @@ function deleteReliefEffort() {
 
 }
 
-
 function deletePerson() {
 
-    const peoples = [{
-        firstName: "Monique",
-        lastName: "Martin",
-        phone: "404 357-2222",
-        email: "monique@gmail.com",
-        type: "person",
-        active: true
-    }, {
-        firstName: "Steve",
-        lastName: "Martin",
-        phone: "303 400-6000",
-        email: "wildandcrazyguy@gmail.com",
-        type: "person",
-        active: true
-    }];
+    const peoples = [
+        {
+            firstName: "Monique",
+            lastName: "Martin",
+            phone: "404 357-2222",
+            email: "monique@gmail.com",
+            type: "person",
+            active: true
+        }, {
+            firstName: "Steve",
+            lastName: "Martin",
+            phone: "303 400-6000",
+            email: "wildandcrazyguy@gmail.com",
+            type: "person",
+            active: true
+        }
+    ];
 
     db.bulkDocs(peoples, function(err, response) {
         if (err) {
@@ -403,25 +402,26 @@ function deletePerson() {
     });
 }
 
-
 function updatePerson() {
-    const peoples = [{
-        _id: "person_debby@wahwaaah.com",
-        firstName: "Debby",
-        lastName: "Downer",
-        phone: "404 357-3416",
-        email: "debby@wahwaaah.com",
-        type: "person",
-        active: true
-    }, {
-        _id: "person_patjeffriesjr1987@gmail.com",
-        firstName: "Pat",
-        lastName: "Jeffries",
-        phone: "303 400-6000",
-        email: "patjeffriesjr1987@gmail.com",
-        type: "person",
-        active: true
-    }];
+    const peoples = [
+        {
+            _id: "person_debby@wahwaaah.com",
+            firstName: "Debby",
+            lastName: "Downer",
+            phone: "404 357-3416",
+            email: "debby@wahwaaah.com",
+            type: "person",
+            active: true
+        }, {
+            _id: "person_patjeffriesjr1987@gmail.com",
+            firstName: "Pat",
+            lastName: "Jeffries",
+            phone: "303 400-6000",
+            email: "patjeffriesjr1987@gmail.com",
+            type: "person",
+            active: true
+        }
+    ];
 
     db.bulkDocs(peoples, function(err, response) {
         if (err) {
@@ -449,13 +449,8 @@ function updatePerson() {
                 active: true
             }
 
-            missingPersonDataUpdateTest(debbyUpdateData,
-                "without",
-                "_id", 1)
-            missingPersonDataUpdateTest(patUpdateData,
-                "without",
-                "_rev",
-                2)
+            missingPersonDataUpdateTest(debbyUpdateData, "without", "_id", 1)
+            missingPersonDataUpdateTest(patUpdateData, "without", "_rev", 2)
 
             debbyUpdateData._id = response[0].id
             patUpdateData._rev = response[1].rev
@@ -465,27 +460,28 @@ function updatePerson() {
     });
 }
 
-
 function updateReliefEffort() {
-    const reliefEfforts = [{
-        _id: "relief_St_Phillips_Kenya_2013",
-        type: "relief",
-        phase: "completed",
-        name: "Kenya 2013",
-        organizationID: "St. Phillips",
-        desc: "Build school in Kenya",
-        start: "2013-01-05",
-        end: "2013-02-15"
-    },{
-        _id: "relief_St_Phillips_Kenya_2012",
-        type: "relief",
-        phase: "completed",
-        name: "Kenya 2012",
-        organizationID: "St. Phillips",
-        desc: "Build school in Kenya",
-        start: "2012-01-05",
-        end: "2012-02-15"
-    }];
+    const reliefEfforts = [
+        {
+            _id: "relief_St_Phillips_Kenya_2013",
+            type: "relief",
+            phase: "completed",
+            name: "Kenya 2013",
+            organizationID: "St. Phillips",
+            desc: "Build school in Kenya",
+            start: "2013-01-05",
+            end: "2013-02-15"
+        }, {
+            _id: "relief_St_Phillips_Kenya_2012",
+            type: "relief",
+            phase: "completed",
+            name: "Kenya 2012",
+            organizationID: "St. Phillips",
+            desc: "Build school in Kenya",
+            start: "2012-01-05",
+            end: "2012-02-15"
+        }
+    ];
 
     db.bulkDocs(reliefEfforts, function(err, response) {
         if (err) {
@@ -506,7 +502,7 @@ function updateReliefEffort() {
                 end: "2013-02-29"
             }
 
-            const kenya2012Data ={
+            const kenya2012Data = {
                 _id: response[1].id,
                 type: "relief",
                 phase: "completed",
@@ -517,13 +513,8 @@ function updateReliefEffort() {
                 end: "2012-02-15"
             }
 
-            missingReliefEffortDataUpdateTest(kenya2013Data,
-                "without",
-                "_id", 1)
-            missingReliefEffortDataUpdateTest(kenya2012Data,
-                "without",
-                "_rev",
-                2)
+            missingReliefEffortDataUpdateTest(kenya2013Data, "without", "_id", 1)
+            missingReliefEffortDataUpdateTest(kenya2012Data, "without", "_rev", 2)
 
             kenya2013Data._id = response[0].id
             kenya2012Data._rev = response[1].rev
@@ -542,4 +533,4 @@ var testLibrary = {
     deleteReliefEffort: deleteReliefEffort
 };
 
-module.exports = testLibrary;
+module.exports = testLibrary

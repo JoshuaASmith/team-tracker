@@ -1,6 +1,5 @@
-/*jshint esversion: 6 */
-const testLibary = require('./testLibrary.js');
+const testLibary = require('./testLibrary.js')
 
-testFn = process.argv[2];
+testFn = process.argv[2]
 
-testLibary[testFn]();
+testLibary[testFn]()
