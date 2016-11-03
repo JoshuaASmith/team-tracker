@@ -43,6 +43,7 @@ function getDocByID(id, callback) {
         })
     }
 }
+
 function updateDoc(data, callback) {
     if (typeof data == "undefined" || data === null) {
         return callback(new Error('400Missing data for update'))
@@ -57,6 +58,7 @@ function updateDoc(data, callback) {
         })
     }
 }
+
 function deleteDoc(data, callback) {
     if (typeof data == "undefined" || data === null) {
         return callback(new Error('400Missing data for delete'))
@@ -97,8 +99,9 @@ function queryDB(sortBy, startKey, limit, callback) {
         })
     }
 }
+
 function createView(designDoc, callback) {
-    if (typeof designDoc == 'undefined' || data === null) {
+    if (typeof designDoc == 'undefined' || designDoc === null) {
         return callback(new Error('400 Missing data for createView'))
     } else {
         db.put(designDoc, function(err, response) {
@@ -124,15 +127,19 @@ var convertPersons = function(queryRow) {
 function getPlayer(id, callback) {
     getDocByID(id, callback)
 }
+
 function updatePlayer(data, callback) {
     updateDoc(data, callback)
 }
+
 function deletePlayer(data, callback) {
     deleteDoc(data, callback)
 }
+
 function listPlayer(sortBy, startKey, limit, callback) {
     queryDB(sortBy, startKey, limit, callback)
 }
+
 function createPlayer(data, callback) {
     if (typeof data == "undefined" || data === null) {
         return callback(new Error('400Missing data for create'))
@@ -158,20 +165,24 @@ function createPlayer(data, callback) {
 function getTeam(id, callback) {
     getDocByID(id, callback)
 }
+
 function updateTeam(data, callback) {
     updateDoc(data, callback)
 }
+
 function deleteTeam(data, callback) {
     deleteDoc(data, callback)
 }
+
 function listTeam(sortBy, startKey, limit, callback) {
     queryDB(sortBy, startKey, limit, callback)
 }
+
 function createTeam(data, callback) {
     if (typeof data == 'undefined' || data === null) {
         return callback(new Error('400 Missing data'))
     } else {
-        data.active : true
+        data.active = true
         data.type = 'team'
         data._id = 'team_' + data.teamName + data.cityName
         db.put(data, function(err, response) {
