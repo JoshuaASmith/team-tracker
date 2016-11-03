@@ -3,12 +3,12 @@
     "protocol": "http",
     "hostname": "127.0.0.1",
     "port": 5984,
-    "pathname": "relief-tracker"
+    "pathname": "team-tracker"
   },
   "mySQL": {
     "host": "127.0.0.1",
     "port": 3306,
-    "dbName": "relief_tracker"
+    "dbName": "team-tracker"
   },
   "debug": true
 }

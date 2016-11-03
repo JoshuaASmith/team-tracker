@@ -1,13 +1,13 @@
 {
-  "name": "relief-student",
+  "name": "team-tracker",
   "version": "1.0.0",
-  "description": "relief tracker application",
+  "description": "team-tracker application",
   "main": "index.js",
   "scripts": {
     "start": "node API/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "TripOtt",
+  "author": "JoshuaSmith",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.2",

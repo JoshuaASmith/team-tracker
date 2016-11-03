@@ -1,1 +1,10 @@
 // Our API goes here!
+const express = require('express')
+var app = express()
+const HTTPError = require('node-http-error')
+const dal = require('../DAL/no-sql.js')
+var http = require('http')
+var bodyParser = require('body-parser')
+//var jsonParser = bodyParser.json()
+const jsonParser = bodyParser.json()
+app.use(bodyParser.json())
