@@ -22,7 +22,8 @@ var dal = {
     listTeam: listTeam,
     createPlayer: createPlayer,
     createTeam: createTeam,
-    createView: createView
+    createView: createView,
+    listPosition: listPosition
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -30,10 +31,10 @@ var dal = {
 ///////////////////////////////////////////////////////////////////////////
 
 function getDocByID(id, callback) {
-    if (typeof id == 'undefined' || data === null) {
+    if (typeof id == 'undefined' || id === null) {
         return callback(new Error('400Missing data for update'))
     } else {
-        db.get(data, function(err, response) {
+        db.get(id, function(err, response) {
             if (err) {
                 return callback(err)
             }
@@ -90,7 +91,7 @@ function queryDB(sortBy, startKey, limit, callback) {
             if (err) {
                 return callback(err)
             }
-            if (result) {
+            if (response) {
                 if (startKey !== '') {
                     response.rows.shift()
                 }
@@ -123,6 +124,23 @@ var convertPersons = function(queryRow) {
 ///////////////////////////////////////////////////////////////////////////
 //                              PERSONS
 ///////////////////////////////////////////////////////////////////////////
+
+function listPosition(couchView, position, callback) {
+    db.query(couchView, {
+        include_docs: true,
+        key: position
+    }, function(err, queryRows) {
+        if (err) {
+            return callback(err)
+        }
+        if (queryRows) {
+            callback(null, queryRows.rows.map(row => row.doc))
+            //callback(null, queryRows.rows.map(row => row.doc.team))
+            //callback(null, queryRows)
+        }
+    })
+
+}
 
 function getPlayer(id, callback) {
     getDocByID(id, callback)

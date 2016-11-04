@@ -101,22 +101,14 @@ function getTeamSortBy(type, dalModule) {
 ///// GET FUNCTIONS  ///////////////
 /////////////////////////////////////////////////////////////////
 
-app.get('/players(/page/:page)?', function(req, res, next) {
-    const sortByParam = req.query.sortBy || 'lastName'
-    //const sortBy = getPlayerSortBy(sortByParam, 'nosql')
+app.get('/players', function(req, res, next) {
+    const sortByParam = req.query.sortBy || 'playerSort'
+    //const sortBy = getPersonSortBy(sortByParam, 'nosql')
     const sortBy = sortByParam
-    const page = req.params.hasOwnProperty('page')
-        ? req.params.page
-        : null
-    if (page) {
-        var startKey = ''
-    } else {
-        var startKey = req.query.sorttoken || ''
-    }
-    //const startKey = req.query.sortToken || ''
+    const sortToken = req.query.sortToken || ''
     const limit = req.query.limit || 5
-    console.log(req.body)
-    dal.listPlayer(sortBy, startKey, limit, function callback(err, data) {
+
+    dal.listPlayer(sortBy, sortToken, limit, function callback(err, data) {
         if (err) {
             var responseError = buildResponseError(err)
             return next(new HTTPError(responseError.status, responseError.message, responseError))
@@ -129,9 +121,11 @@ app.get('/players(/page/:page)?', function(req, res, next) {
         }
     })
 })
+
 app.get('/teams', function(req, res, next) {
-    const sortByParam = req.query.sortBy || 'name'
-    const sortBy = getTeamSortBy(sortByParam, dalModule)
+    const sortByParam = req.query.sortBy || 'teamSort'
+    //const sortBy = getTeamSortBy(sortByParam, dalModule)
+    const sortBy = sortByParam
     const sortToken = req.query.sorttoken || ''
     const limit = req.query.limit || 5
     dal.listTeam(sortBy, sortToken, limit, function callback(err, data) {
@@ -174,6 +168,41 @@ app.get('/players/:id', function(req, res, next) {
             res.send(data);
         }
     })
+})
+
+app.get('/players/position/:position', function(req, res, next) {
+    const couchView = 'playersByPosition'
+    //const sortBy = getPersonSortBy(sortByParam, 'nosql')
+    // const sortBy = sortByParam
+    // const sortToken = req.query.sortToken || ''
+    // const limit = req.query.limit || 5
+    const position = req.params.position
+
+    dal.listPosition(couchView, position, function callback(err, data) {
+        if (err) {
+            var responseError = buildResponseError(err)
+            return next(new HTTPError(responseError.status, responseError.message, responseError))
+        }
+        if (data) {
+            console.log('GET', + req.path, ' query: ', req.query, data)
+            res.append('Content-type', 'application/json')
+            res.status(200).send(data)
+
+        }
+    })
+
+    // dal.listPlayer(couchView, sortToken, limit, function callback(err, data) {
+    //     if (err) {
+    //         var responseError = buildResponseError(err)
+    //         return next(new HTTPError(responseError.status, responseError.message, responseError))
+    //     }
+    //     if (data) {
+    //         console.log('GET', + req.path, ' query: ', req.query, data)
+    //         res.append('Content-type', 'application/json')
+    //         res.status(200).send(data)
+    //
+    //     }
+    // })
 })
 
 app.get('*', function(req, res) {
@@ -226,9 +255,10 @@ app.put('/players/:id', function(req, res, next) {
             var responseError = buildResponseError(err)
             return next(new HTTPError(responseError.status, responseError.message))
         }
-        if (data)
+        if (data) {
             req.body["_id"] = data["_id"]
-        req.body["_rev"] = data["_rev"]
+            req.body["_rev"] = data["_rev"]
+        }
         dal.updatePlayer(req.body, function callback(updatederror, updateddata) {
             if (updatederror) {
                 var responseError = buildResponseError(err)
